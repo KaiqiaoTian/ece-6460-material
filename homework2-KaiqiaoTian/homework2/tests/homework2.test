@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<launch>
+
+  <include file="$(find homework2)/launch/homework2.launch" >
+    <arg name="headless" value="true" />
+  </include>
+
+  <test pkg="homework2" type="run_tests.py" test-name="homework2_tests" time-limit="300.0" />
+
+</launch>

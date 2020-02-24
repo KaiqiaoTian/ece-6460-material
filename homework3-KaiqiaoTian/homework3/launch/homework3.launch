@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<launch>
+
+  <!-- Launch your Homework 3 node here -->
+    <node pkg="homework3" type="homework3" name="homework3" output="screen" />
+
+  <!-- Set up static TF transforms here 
+  <node pkg="homework3" type="homework3" name="homework3_tf" args="1 0 1.5 0 0 0 base_footprint ouster" />-->
+  <node pkg="tf2_ros" type="static_transform_publisher" name="link" args="0.6 0 1.5 0 -0.04 -0.02 base_footprint ouster" />
+
+  <!-- Configure ROS to use time from bag file -->
+  <param name="use_sim_time" value="true" />
+
+  <!-- Dataspeed ROS Driver -->
+  <include file="$(find dbw_mkz_can)/launch/dbw.launch" >
+    <arg name="live" value="false"/>
+  </include>
+
+  <!-- Ouster LIDAR Driver -->
+  <include file="$(find avs_lecture_sensor_config)/launch/ouster_driver.launch" >
+    <arg name="replay" value="true" />
+  </include>
+
+  <!-- Visualize in Rviz -->
+  <arg name="rviz" default="true" />
+  <node if="$(arg rviz)" pkg="rviz" type="rviz" name="perception_viz" args="-d $(find homework3)/rviz/homework3.rviz" respawn="true" />
+
+</launch>

@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<launch>
+
+  <!-- Launch everything here!  <remap from="object_tracks_0" to="object_tracks"/>
+<node pkg="tf2_ros" type="static_transform_publisher" name="link2" args="83.627 352.01 1.4 -0.22311 -4.3782e-5 0.97479 -0.00019129 base_footprint front_camera_optical"/>
+ <node pkg="tf2_ros" type="static_transform_publisher" name="link2" args="0 0 0 0.5 -0.5 -0.5 0.5 camera front_camera_optical"/>
+</node>-->
+ <node pkg="homework2" type="homework2" name="homework2" output="screen" >
+ <remap from="vehicle/ulc_cmd" to="trajectory_ulc_cmd"/>
+ </node>
+
+ <node pkg="homework3" type="homework3" name="homework3" output="screen" >
+ <remap from="ouster/points_raw" to="lidar/points_raw"/>
+ </node>
+
+<node pkg="tf2_ros" type="static_transform_publisher" name="link" args="0.6 0 1.5 0 -0.04 -0.02 base_footprint ouster"/>
+<node pkg="tf2_ros" type="static_transform_publisher" name="link1" args="0 0 0 0 0 0 1 base_footprint front_base_footprint"/>
+<node pkg="tf2_ros" type="static_transform_publisher" name="link2" args="0 0 0  0.5 -0.5 0.5 -0.5 camera front_camera_optical"/>
+<node pkg="tf2_ros" type="static_transform_publisher" name="link3" args="15 0 0 0 0 0 1 camera camera_optical"/>
+
+ <node pkg="homework4" type="homework4" name="homework4" output="screen" >
+ <remap from="detected_objects" to="objects"/>
+ <remap from="homework4/object_tracks" to="object_tracks"/>
+ </node>
+
+ <node pkg="ece6460_mono_example" type="lane_detection_example" name="lane_detection" output="screen" >
+
+ <remap from="image_rect_color" to="camera/image_raw"/>
+<remap from="camera_info" to="camera/camera_info"/>
+ </node>
+
+ <!--
+<group ns="camera">
+<node pkg="image_proc" type="image_proc" name="image_proc"/>
+<node pkg="ece6460_mono_example" type="lane_detection_example" name="lane_detection" output="screen" />
+</group>
+-->
+
+  <!-- Leave everything under here alone -->
+
+  <!-- Gazebo simulation -->
+  <arg name="gazebo_scenario" default="$(find homework5)/yaml/homework5_scenario.yaml" />
+  <include file="$(find dataspeed_dbw_gazebo)/launch/dataspeed_dbw_gazebo.launch" >
+    <arg name="sim_param_file" value="$(find homework5)/yaml/homework5_sim_params.yaml" />
+    <arg name="world_name" value="$(find homework5)/worlds/homework5.world" />
+    <arg name="headless" value="false" />
+  </include>
+  <include file="$(find avs_lecture_launch)/launch/spawn_traffic.launch" >
+    <arg name="gazebo_scenario" value="$(arg gazebo_scenario)" />
+  </include>
+
+  <!-- Dataspeed ROS Driver -->
+  <include file="$(find dbw_mkz_can)/launch/dbw.launch" >
+    <arg name="live" value="false"/>
+    <arg name="can_ns" value="can_bus_dbw" />
+  </include>
+
+  <!-- Enable drive-by-wire control automatically when simulation starts -->
+  <node pkg="rostopic" type="rostopic" name="enable_dbw" args="pub /vehicle/enable std_msgs/Empty -1" output="screen" />
+
+  <!-- Route network lookup -->
+  <node pkg="autoware_bridge" type="bridge_lane_generator" name="lane_generator" output="screen" >
+    <rosparam file="$(arg gazebo_scenario)" />
+  </node>
+
+  <!-- Adaptive cruise controller -->
+  <node pkg="avs_lecture_acc" type="avs_lecture_acc" name="acc_node" output="screen" >
+    <remap from="raw_ulc_cmd" to="trajectory_ulc_cmd" />
+  </node>
+
+  <!-- Visualize -->
+  <node pkg="autoware_bridge" type="gps_frame_management.py" name="gps_frame_management" >
+    <rosparam file="$(arg gazebo_scenario)" />
+  </node>
+  <arg name="rviz" default="true" />
+  <node if="$(arg rviz)" pkg="rviz" type="rviz" name="perception_viz" args="-d $(find homework5)/rviz/homework5.rviz" respawn="true" />
+
+</launch>

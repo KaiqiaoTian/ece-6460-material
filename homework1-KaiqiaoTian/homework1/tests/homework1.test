@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<launch>
+
+  <!-- Unit under test -->
+  <node pkg="homework1" type="homework1" name="homework1" output="screen" />
+
+  <include file="$(find avs_lecture_launch)/launch/sim_launch.launch" >
+    <arg name="headless" value="true" />
+  </include>
+
+  <test pkg="homework1" type="run_tests.py" test-name="homework1_tests" time-limit="30.0" />
+
+</launch>

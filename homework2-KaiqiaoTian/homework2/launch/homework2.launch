@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<launch>
+
+  <arg name="map_name" default="sim_world1" />
+
+  <!-- Launch your Homework 2 node here!!! -->
+  <node pkg="homework2" type="homework2" name="homework2" output="screen" />
+
+  <!-- Gazebo simulation -->
+  <arg name="gazebo_scenario" default="$(find homework2)/yaml/homework2_scenario.yaml" />
+  <arg name="headless" default="false" />
+  <include file="$(find dataspeed_dbw_gazebo)/launch/dataspeed_dbw_gazebo.launch" >
+    <arg name="sim_param_file" value="$(find avs_lecture_launch)/yaml/$(arg map_name)_sim_params.yaml" />
+    <arg name="world_name" value="$(find avs_lecture_gazebo)/worlds/$(arg map_name).world" />
+    <arg name="headless" value="$(arg headless)" />
+  </include>
+
+  <!-- Dataspeed ROS Driver -->
+  <include file="$(find dbw_mkz_can)/launch/dbw.launch" >
+    <arg name="live" value="false"/>
+    <arg name="can_ns" value="can_bus_dbw" />
+  </include>
+
+  <!-- Enable drive-by-wire control automatically when simulation starts -->
+  <node pkg="rostopic" type="rostopic" name="enable_dbw" args="pub /vehicle/enable std_msgs/Empty -1" output="screen" />
+
+  <!-- Route network lookup -->
+  <node pkg="autoware_bridge" type="bridge_lane_generator" name="lane_generator" output="screen" >
+    <rosparam file="$(arg gazebo_scenario)" />
+  </node>
+
+  <!-- Visualize -->
+  <node pkg="autoware_bridge" type="gps_frame_management.py" name="gps_frame_management" >
+    <rosparam file="$(arg gazebo_scenario)" />
+  </node>
+  <arg name="rviz" default="true" />
+  <node if="$(eval rviz and not headless)" pkg="rviz" type="rviz" name="perception_viz" args="-d $(find avs_lecture_launch)/rviz/simulation.rviz" respawn="true" />
+
+</launch>

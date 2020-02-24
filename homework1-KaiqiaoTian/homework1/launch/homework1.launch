@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<launch>
+
+  <node pkg="homework1" type="homework1" name="homework1" output="screen" />
+
+  <include file="$(find avs_lecture_launch)/launch/sim_launch.launch" />
+
+</launch>

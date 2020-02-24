@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<launch>
+
+  <include file="$(find homework4)/launch/homework4.launch" >
+    <arg name="rviz" value="false" />
+  </include>
+
+  <node pkg="rosbag" type="play" name="bag_playback" args="--clock $(find homework4)/tests/homework4.bag" />
+
+  <test pkg="homework4" type="run_tests.py" test-name="homework4_tests" time-limit="300.0" />
+
+</launch>

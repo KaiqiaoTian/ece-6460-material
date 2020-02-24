@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<launch>
+
+  <!-- Launch your Homework 4 node here -->
+  <node pkg="homework4" type="homework4" name="homework4" output="screen" />
+
+  <!-- Reference implementation to compare against -->
+  <include file="$(find avs_lecture_sensor_config)/launch/euclidean_clustering.launch" >
+    <arg name="raw_points_topic" value="/ouster/points_raw" />
+    <arg name="transform_raw_cloud" value="true" />
+  </include>
+
+  <!-- Set up static TF transforms here -->
+  <node pkg="tf2_ros" type="static_transform_publisher" name="footprint_to_ouster" args="0.6 0.0 1.5 -0.02 -0.04 0.0 base_footprint ouster" />
+
+  <!-- Configure ROS to use time from bag file -->
+  <param name="use_sim_time" value="true" />
+
+  <!-- Dataspeed ROS Driver -->
+  <include file="$(find dbw_mkz_can)/launch/dbw.launch" >
+    <arg name="live" value="false"/>
+  </include>
+
+  <!-- Ouster LIDAR Driver -->
+  <include file="$(find avs_lecture_sensor_config)/launch/ouster_driver.launch" >
+    <arg name="replay" value="true" />
+  </include>
+
+  <!-- Visualize in Rviz -->
+  <arg name="rviz" default="true" />
+  <node if="$(arg rviz)" pkg="rviz" type="rviz" name="perception_viz" args="-d $(find homework4)/rviz/homework4.rviz" respawn="true" />
+
+</launch>
