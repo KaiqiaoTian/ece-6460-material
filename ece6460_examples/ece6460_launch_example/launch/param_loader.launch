@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<launch>
+
+  <node pkg="ece6460_launch_example" type="param_loader" name="instance1" output="screen" >
+    <param name="param1" value="1.0" />
+    <param name="param2" value="99.0" />
+    <param name="param3" value="insert_text_here" />
+  </node>
+
+  <node pkg="ece6460_launch_example" type="param_loader" name="instance2" output="screen" >
+    <param name="param1" value="1.7" />
+    <param name="param2" value="9999.0" />
+    <param name="param3" value="some_more_text" />
+  </node>
+
+</launch>

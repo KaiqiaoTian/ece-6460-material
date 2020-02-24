@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<launch>
+
+  <arg name="image_topic" default="/camera/image_raw" />
+  <node pkg="camera_calibration" type="cameracalibrator.py" name="calibrator" args="--size 8x6 --square 0.0254" output="screen" >
+    <remap from="image" to="$(arg image_topic)" />
+  </node>
+
+  <arg name="live" default="true" />
+  <arg name="camera_name" default="camera" />
+  <include file="$(find ece6460_camera_cal_example)/launch/mono_camera_driver.launch" >
+    <arg name="camera_name" value="$(arg camera_name)" />
+  </include>
+
+</launch>

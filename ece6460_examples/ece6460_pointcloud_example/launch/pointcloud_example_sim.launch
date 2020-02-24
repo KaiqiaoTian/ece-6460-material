@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<launch>
+
+  <!-- Run the point cloud processing node -->
+  <node pkg="ece6460_pointcloud_example" type="pointcloud_example" name="pointcloud_example" output="screen" >
+    <remap from="points" to="/cepton/points_raw" />
+  </node>
+
+  <!-- Start Gazebo and run ACC simulation -->
+  <include file="$(find avs_lecture_launch)/launch/sim_launch.launch" >
+    <arg name="rviz" value="false" />
+  </include>
+
+  <!-- Open Rviz to visualize the outputs -->
+  <node pkg="rviz" type="rviz" name="example_viz" args="-d $(find ece6460_pointcloud_example)/rviz/example.rviz" respawn="true" />
+
+</launch>

@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<launch>
+
+  <group ns="front_camera" >
+    <node pkg="image_proc" type="image_proc" name="image_proc" />
+    <node pkg="ece6460_mono_example" type="lane_detection_example" name="lane_detection" output="screen" />
+  </group>
+
+</launch>
