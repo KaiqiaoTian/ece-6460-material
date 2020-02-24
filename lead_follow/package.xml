@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<package format="2">
+  <!--
+  [Required] The name of the package goes in the <name> tag
+  -->
+  <name>lead_follow</name>
+  
+  <!--
+  [Required] The following tags are required, but are only
+             meaningful when releasing binaries into the
+             ROS buildfarm
+  -->
+  <version>0.0.0</version>
+  <description>
+     lead_follow for ECE 6460 project
+  </description>
+  <license>TODO</license>
+  <maintainer email="abc@xyz.com">Your Name</maintainer>
+  
+  <!--
+  [Required] Make this package depend on the catkin build tool
+  -->
+  <buildtool_depend>catkin</buildtool_depend>
+  
+  <!--
+  [Required if using C++] Make this package depend on the roscpp libraries
+  -->
+  <depend>roscpp</depend>
+  <depend>dynamic_reconfigure</depend>
+  <depend>visualization_msgs</depend>
+  <depend>pcl_ros</depend>
+  <depend>tf</depend>
+</package>

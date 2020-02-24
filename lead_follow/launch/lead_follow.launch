@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+
+<launch>
+
+  <!-- Launch your lead_follow node here -->
+  <node pkg="lead_follow" type="lead_follow" name="lead_follow" output="screen" />
+
+  <include file="$(find dataspeed_dbw_gazebo)/launch/dataspeed_dbw_gazebo.launch" >
+    <arg name="use_camera_control" value="true" />
+    <arg name="world_name" value="$(find dataspeed_dbw_gazebo)/worlds/lead_follow.world" />
+    <arg name="sim_param_file" value="$(find dataspeed_dbw_gazebo)/yaml/lead_follow.yaml" />
+  </include>
+
+  <include file="$(find dataspeed_dbw_gazebo_demo)/launch/generic_dbw.launch" >
+    <arg name="vehicle_name" value="pacifica" />
+    <arg name="vehicle_type" value="pacifica" />
+  </include>
+<!--
+  <node ns="pacifica" pkg="rostopic" type="rostopic" name="twist_pub" args="pub cmd_vel geometry_msgs/Twist '{linear: {x: 0.0, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.0}}' -r 50" />-->
+  <node ns="pacifica" pkg="rostopic" type="rostopic" name="enable_pub" args="pub enable std_msgs/Empty" />
+
+  <include file="$(find dataspeed_dbw_gazebo_demo)/launch/generic_dbw.launch" >
+    <arg name="vehicle_name" value="fusion" />
+    <arg name="vehicle_type" value="fusion" />
+  </include>
+<!--
+  <node ns="fusion" pkg="rostopic" type="rostopic" name="twist_pub" args="pub cmd_vel geometry_msgs/Twist '{linear: {x: 0.0, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.0}}' -r 50" />-->
+  <node ns="fusion" pkg="rostopic" type="rostopic" name="enable_pub" args="pub enable std_msgs/Empty" />
+
+ <node pkg="rviz" type="rviz" name="lead_follow_rviz" args="-d $(find lead_follow)/rviz/lead_follow_2.rviz" respawn="true" />
+
+
+  <node pkg="joy" name="joy" type="joy_node">
+  <param name="autorepeat_rate" value="80"/>
+  </node>
+<!--
+  <node pkg="rviz" type="rviz" name="multi_car_rviz" args="-d $(find dataspeed_dbw_gazebo_demo)/rviz/multi_car.rviz" respawn="true" />
+  <node pkg="rviz" type="rviz" name="lead_follow_rviz" args="-d $(find lead_follow)/rviz/lead_follow.rviz" respawn="true" />
+  <node pkg="lead_follow" name="joystick" type="joystick.py" />
+-->
+</launch>

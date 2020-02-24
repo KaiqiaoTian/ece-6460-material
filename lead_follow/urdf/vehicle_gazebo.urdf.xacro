@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+
+<robot name="vehicle_gazebo" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:property name="wheel_friction" value="1.2" />
+  <xacro:arg name="tf_prefix" default="" />
+  <xacro:arg name="topic_ns" default="vehicle" />
+
+  <gazebo reference="base_link" >
+    <mu1>0.5</mu1>
+    <mu2>0.5</mu2>
+  </gazebo>
+
+  <gazebo reference="wheel_fl" >
+    <mu1>${wheel_friction}</mu1>
+    <mu2>${wheel_friction}</mu2>
+  </gazebo>
+
+  <gazebo reference="wheel_fr" >
+    <mu1>${wheel_friction}</mu1>
+    <mu2>${wheel_friction}</mu2>
+  </gazebo>
+
+  <gazebo reference="wheel_rl" >
+    <mu1>${wheel_friction}</mu1>
+    <mu2>${wheel_friction}</mu2>
+  </gazebo>
+
+  <gazebo reference="wheel_rr" >
+    <mu1>${wheel_friction}</mu1>
+    <mu2>${wheel_friction}</mu2>
+  </gazebo>
+
+  <gazebo>
+    <!-- Simulated vehicle interface -->
+    <plugin name="dbw_interface_plugin" filename="libdataspeed_dbw_gazebo_plugins_$(arg car_model).so" >
+      <startGear>$(arg start_gear)</startGear>
+      <carYear>$(arg car_year)</carYear>
+      <pubTf>$(arg pub_tf)</pubTf>
+      <pubOdom>$(arg pub_odom)</pubOdom>
+      <tfPrefix>$(arg tf_prefix)</tfPrefix>
+      <topicNs>$(arg topic_ns)</topicNs>
+      <productionRefLat>$(arg production_ref_lat)</productionRefLat>
+      <productionRefLon>$(arg production_ref_lon)</productionRefLon>
+    </plugin>
+
+    <!-- Publish current joint angles -->
+    <plugin name="joint_state_publisher" filename="libgazebo_ros_joint_state_publisher.so">
+        <robotNamespace>$(arg topic_ns)</robotNamespace>
+        <jointName>
+            steer_fl, steer_fr, wheel_fl, wheel_fr, wheel_rl, wheel_rr
+        </jointName>
+        <updateRate>100</updateRate>
+        <alwaysOn>true</alwaysOn>
+    </plugin>
+  </gazebo>
+
+</robot>

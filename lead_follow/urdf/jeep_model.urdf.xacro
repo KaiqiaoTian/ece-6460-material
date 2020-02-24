@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<robot name="dataspeed_dbw_gazebo" xmlns:xacro="http://www.ros.org/wiki/xacro" >
+
+  <!-- Necessary includes -->
+  <xacro:include filename="$(arg structure_urdf)" />
+  <xacro:include filename="$(find dataspeed_dbw_gazebo)/urdf/vehicle_gazebo.urdf.xacro" />
+
+  <!-- Bolt-on sensors go here -->
+  <xacro:include filename="$(find dataspeed_dbw_gazebo)/urdf/vehicle_sensors.urdf.xacro" />
+  <xacro:dbw_camera name="front_camera" parent="base_footprint" >
+    <origin xyz="2.1 0 1.52" rpy="0 0.57 0" />
+  </xacro:dbw_camera>
+  <xacro:dataspeed_dbw_gazebo_gps name="perfect_gps" parent="base_footprint" x="0.13" y="0" z="1.68" rate="50.0" ref_lat="45.0" ref_lon="-81.0" />
+
+  <xacro:include filename="$(find velodyne_description)/urdf/VLP-16.urdf.xacro"/>
+  <VLP-16 parent="base_footprint" name="velodyne" topic="velodyne_points" hz="10" samples="440">
+    <origin xyz="1.4 0 1.7" rpy="0 0 0" />
+  </VLP-16>
+</robot>
